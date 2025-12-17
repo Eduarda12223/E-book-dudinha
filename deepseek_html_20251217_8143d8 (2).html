@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eduarda's Romance - App de Leitura</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0a0a14;
+            --secondary: #8b0000;
+            --accent: #9c27b0;
+            --card: #1a1a2e;
+            --surface: #24243e;
+            --text: #ffffff;
+            --text-secondary: #b0b0cc;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --error: #f44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, system-ui, sans-serif;
+        }
+        
+        body {
+            background: var(--primary);
+            color: var(--text);
+            max-width: 500px;
+            margin: 0 auto;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+        
+        /* Welcome Screen */
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 20px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary), var(--card));
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .welcome-logo {
+            margin-bottom: 30px;
+        }
+        
+        .logo-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 30px rgba(139, 0, 0, 0.3);
+        }
+        
+        .welcome-title {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .welcome-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        
+        /* App Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            display: none;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .app-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+            font-size: 1.5rem;
+        }
+        
+        .app-title h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .app-title p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .icon-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .icon-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid var(--surface);
+            z-index: 100;
+            max-width: 500px;
+            margin: 0 auto;
+            display: none;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            padding: 5px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            min-width: 60px;
+        }
+        
+        .nav-item.active {
+            color: var(--accent);
+            background: rgba(156, 39, 176, 0.1);
+        }
+        
+        .nav-icon {
+            font-size: 1.3rem;
+        }
+        
+        .nav-label {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        
+        /* Registration Form */
+        .registration-form {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            margin: 0 auto;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .form-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .form-header p {
+            color: var(--text-secondary);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            background: var(--surface);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(156, 39, 176, 0.05);
+        }
+        
+        .form-input.error {
+            border-color: var(--error);
+        }
+        
+        .error-message {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 15px 25px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(139, 0, 0, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text);
+        }
+        
+        /* Main Content */
+        .app-content {
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+            padding-bottom: 70px;
+            display: none;
+        }
+        
+        /* Home Screen */
+        .welcome-section {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--card), var(--surface));
+            margin: 10px;
+            border-radius: 15px;
+        }
+        
+        .welcome-text h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .welcome-text p {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            padding: 0 20px;
+            margin: 20px 0;
+        }
+        
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .section-title h3 {
+            font-size: 1.2rem;
+        }
+        
+        .see-all {
+            color: var(--accent);
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .action-card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+        
+        /* Featured Books */
+        .featured-books {
+            padding: 0 20px;
+            margin: 20px 0;
+        }
+        
+        .books-scroll {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 10px 5px;
+            scrollbar-width: none;
+        }
+        
+        .books-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .book-card {
+            min-width: 150px;
+            background: var(--card);
+            border-radius: 15px;
+            overflow: hidden;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        
+        .book-cover {
+            height: 180px;
+            background: linear-gradient(45deg, var(--secondary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+        }
+        
+        .book-info {
+            padding: 15px;
+        }
+        
+        .book-info h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .book-author {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        
+        .book-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--warning);
+            font-size: 0.8rem;
+        }
+        
+        /* Reader Screen */
+        .reader-screen {
+            display: none;
+            height: 100%;
+        }
+        
+        .reader-header {
+            background: var(--card);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        
+        .reader-content {
+            padding: 20px;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+        
+        .reader-controls {
+            position: fixed;
+            bottom: 70px;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--surface);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .progress-bar {
+            flex-grow: 1;
+            height: 4px;
+            background: var(--surface);
+            border-radius: 2px;
+            margin: 0 15px;
+            position: relative;
+        }
+        
+        .progress-fill {
+            position: absolute;
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            width: 30%;
+        }
+        
+        /* Create Screen */
+        .create-screen {
+            display: none;
+            padding: 20px;
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+        
+        .create-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .create-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .create-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .input-group label {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        
+        .input-field {
+            background: var(--surface);
+            border: 1px solid var(--card);
+            border-radius: 10px;
+            padding: 15px;
+            color: var(--text);
+            font-size: 1rem;
+        }
+        
+        .textarea-field {
+            min-height: 150px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .theme-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .theme-option {
+            position: relative;
+        }
+        
+        .theme-option input {
+            display: none;
+        }
+        
+        .theme-preview {
+            height: 80px;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-option input:checked + .theme-preview {
+            border-color: var(--accent);
+            transform: scale(1.05);
+        }
+        
+        .theme-dark {
+            background: linear-gradient(135deg, #0a0a14, #1a1a2e);
+        }
+        
+        .theme-romance {
+            background: linear-gradient(135deg, #8b0000, #9c27b0);
+        }
+        
+        .theme-light {
+            background: linear-gradient(135deg, #ffffff, #f5f5f5);
+        }
+        
+        .theme-midnight {
+            background: linear-gradient(135deg, #0d1b2a, #1b263b);
+        }
+        
+        /* Library Screen */
+        .library-screen {
+            display: none;
+            padding: 20px;
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+        
+        .search-bar {
+            background: var(--surface);
+            border-radius: 10px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .search-bar input {
+            background: none;
+            border: none;
+            color: var(--text);
+            flex-grow: 1;
+            font-size: 1rem;
+        }
+        
+        .library-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .library-book {
+            background: var(--card);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        .library-book-cover {
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(45deg, var(--secondary), var(--accent));
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+        }
+        
+        /* Profile Screen */
+        .profile-screen {
+            display: none;
+            padding: 20px;
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .profile-avatar-container {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            overflow: hidden;
+            border: 3px solid var(--accent);
+        }
+        
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .change-photo-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--accent);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .profile-info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .profile-info p {
+            color: var(--text-secondary);
+        }
+        
+        .edit-name-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin: 5px auto 0;
+        }
+        
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .profile-stat {
+            background: var(--card);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .profile-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .menu-item {
+            background: var(--card);
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .menu-item:hover {
+            background: var(--surface);
+            transform: translateX(5px);
+        }
+        
+        .menu-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(156, 39, 176, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+        }
+        
+        /* My Books Section */
+        .my-books-section {
+            margin-top: 30px;
+        }
+        
+        .my-books-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .my-book-card {
+            background: var(--card);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+        }
+        
+        .my-book-cover {
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(45deg, var(--accent), var(--secondary));
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .modal-content {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-icon {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        /* Edit Name Modal */
+        .edit-name-form {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--surface);
+        }
+        
+        /* Animation for screens */
+        .screen {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-logo">
+            <div class="logo-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <h1 class="welcome-title">Eduarda's Romance</h1>
+            <p class="welcome-subtitle">Onde as histórias de amor ganham vida</p>
+        </div>
+        
+        <div class="registration-form">
+            <div class="form-header">
+                <h2>Bem-vindo(a)!</h2>
+                <p>Como gostaria de ser chamado(a)?</p>
+            </div>
+            
+            <form id="nameRegistrationForm">
+                <div class="form-group">
+                    <label for="userName" class="form-label">Seu Nome</label>
+                    <input type="text" id="userName" class="form-input" placeholder="Digite seu nome" required>
+                    <div class="error-message" id="nameError">Por favor, digite um nome válido (mínimo 2 caracteres)</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="userEmail" class="form-label">E-mail (opcional)</label>
+                    <input type="email" id="userEmail" class="form-input" placeholder="seu@email.com">
+                    <div class="error-message" id="emailError">Por favor, digite um e-mail válido</div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="skipRegistration()">
+                        <i class="fas fa-forward"></i> Pular
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-check"></i> Continuar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- App Header -->
+    <div class="app-header" id="appHeader">
+        <div class="header-left">
+            <div class="app-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="app-title">
+                <h1>Eduarda's Romance</h1>
+                <p>Olá, <span id="headerUserName">Leitor</span></p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="icon-btn" onclick="toggleSearch()">
+                <i class="fas fa-search"></i>
+            </button>
+            <button class="icon-btn" onclick="showProfile()">
+                <i class="fas fa-user"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Home Screen -->
+    <div class="app-content" id="homeScreen">
+        <div class="welcome-section">
+            <div class="welcome-text">
+                <h2>Olá, <span id="homeUserName">Leitor</span>!</h2>
+                <p>Explore nossos ebooks gratuitos ou crie sua própria história</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalBooks">4</div>
+                    <div class="stat-label">Ebooks Disponíveis</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="myBooksCount">0</div>
+                    <div class="stat-label">Meus Ebooks</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <div class="section-title">
+                <h3>Ações Rápidas</h3>
+            </div>
+            <div class="actions-grid">
+                <div class="action-card" onclick="startReading(0)">
+                    <div class="action-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h4>Ler Agora</h4>
+                    <p>Comece uma nova leitura</p>
+                </div>
+                <div class="action-card" onclick="showCreateScreen()">
+                    <div class="action-icon">
+                        <i class="fas fa-pen-fancy"></i>
+                    </div>
+                    <h4>Criar Ebook</h4>
+                    <p>Nova história</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="featured-books">
+            <div class="section-title">
+                <h3>Ebooks Gratuitos</h3>
+            </div>
+            <div class="books-scroll">
+                <div class="book-card" onclick="startReading(0)">
+                    <div class="book-cover">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="book-info">
+                        <h4>Amor em Tempos de Café</h4>
+                        <div class="book-author">Eduarda Silva</div>
+                        <div class="book-rating">
+                            <i class="fas fa-star"></i>
+                            <span>4.8</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="book-card" onclick="startReading(1)">
+                    <div class="book-cover">
+                        <i class="fas fa-heart-broken"></i>
+                    </div>
+                    <div class="book-info">
+                        <h4>Desculpas do Coração</h4>
+                        <div class="book-author">Eduarda Mendes</div>
+                        <div class="book-rating">
+                            <i class="fas fa-star"></i>
+                            <span>4.6</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="book-card" onclick="startReading(2)">
+                    <div class="book-cover">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="book-info">
+                        <h4>O Diário de Ana</h4>
+                        <div class="book-author">Eduarda Costa</div>
+                        <div class="book-rating">
+                            <i class="fas fa-star"></i>
+                            <span>4.9</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="book-card" onclick="startReading(3)">
+                    <div class="book-cover">
+                        <i class="fas fa-rose"></i>
+                    </div>
+                    <div class="book-info">
+                        <h4>Entre Rosas e Espinhos</h4>
+                        <div class="book-author">Eduarda Almeida</div>
+                        <div class="book-rating">
+                            <i class="fas fa-star"></i>
+                            <span>4.7</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reader Screen -->
+    <div class="reader-screen" id="readerScreen">
+        <div class="reader-header">
+            <button class="back-btn" onclick="showHomeScreen()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div>
+                <h3 id="readerBookTitle">Amor em Tempos de Café</h3>
+                <p id="readerBookAuthor">Eduarda Silva</p>
+            </div>
+        </div>
+        <div class="reader-content" id="readerContent">
+            <!-- Content loaded dynamically -->
+        </div>
+        <div class="reader-controls">
+            <button class="icon-btn" onclick="prevPage()">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span id="pageInfo">1/5</span>
+            <button class="icon-btn" onclick="nextPage()">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Create Screen -->
+    <div class="create-screen" id="createScreen">
+        <div class="create-header">
+            <h2>Criar Novo Ebook</h2>
+            <p>Personalize sua história de romance</p>
+        </div>
+        <form class="create-form" id="ebookForm">
+            <div class="input-group">
+                <label for="ebookTitle">Título *</label>
+                <input type="text" id="ebookTitle" class="input-field" placeholder="Digite o título" value="Meu Romance Especial" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="ebookAuthor">Autor(a) *</label>
+                <input type="text" id="ebookAuthor" class="input-field" placeholder="Seu nome" value="" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="ebookContent">História *</label>
+                <textarea id="ebookContent" class="input-field textarea-field" placeholder="Comece a escrever sua história aqui..." required>
+Era uma vez, em uma pequena cidade litorânea, um amor que desafiou todas as convenções. Sempre fui uma sonhadora, alguém que acreditava em finais felizes mesmo quando a realidade parecia dizer o contrário.
+
+Tudo mudou quando conheci Lucas, um pianista que chegou à cidade para um concerto de verão. Seus olhares se cruzaram durante o ensaio, e naquele instante, algo mágico aconteceu.
+
+"Você toca com a alma", disse, aproximando-se do palco após o ensaio.
+
+Ele sorriu, os dedos ainda pairando sobre as teclas. "E você ouve com o coração."
+
+Daquele dia em diante, os encontros se tornaram frequentes. Caminhadas na praia ao pôr do sol, conversas profundas sobre sonhos e medos, e a descoberta de que o amor verdadeiro surge quando menos se espera.</textarea>
+            </div>
+            
+            <div class="input-group">
+                <label>Tema do Ebook</label>
+                <div class="theme-selector">
+                    <div class="theme-option">
+                        <input type="radio" name="theme" id="theme1" value="dark" checked>
+                        <label for="theme1" class="theme-preview theme-dark"></label>
+                    </div>
+                    <div class="theme-option">
+                        <input type="radio" name="theme" id="theme2" value="romance">
+                        <label for="theme2" class="theme-preview theme-romance"></label>
+                    </div>
+                    <div class="theme-option">
+                        <input type="radio" name="theme" id="theme3" value="light">
+                        <label for="theme3" class="theme-preview theme-light"></label>
+                    </div>
+                    <div class="theme-option">
+                        <input type="radio" name="theme" id="theme4" value="midnight">
+                        <label for="theme4" class="theme-preview theme-midnight"></label>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="button" class="btn btn-primary" onclick="createAndSaveEbook()">
+                <i class="fas fa-save"></i> Salvar Ebook
+            </button>
+        </form>
+    </div>
+
+    <!-- Library Screen -->
+    <div class="library-screen" id="libraryScreen">
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Buscar ebooks..." id="librarySearch">
+        </div>
+        <h3 style="margin-bottom: 15px;">Biblioteca</h3>
+        <div class="library-grid">
+            <div class="library-book" onclick="startReading(0)">
+                <div class="library-book-cover">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h4>Amor em Tempos...</h4>
+                <p>Eduarda Silva</p>
+            </div>
+            <div class="library-book" onclick="startReading(1)">
+                <div class="library-book-cover">
+                    <i class="fas fa-heart-broken"></i>
+                </div>
+                <h4>Desculpas do...</h4>
+                <p>Eduarda Mendes</p>
+            </div>
+            <div class="library-book" onclick="startReading(2)">
+                <div class="library-book-cover">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h4>O Diário de Ana</h4>
+                <p>Eduarda Costa</p>
+            </div>
+            <div class="library-book" onclick="startReading(3)">
+                <div class="library-book-cover">
+                    <i class="fas fa-rose"></i>
+                </div>
+                <h4>Entre Rosas e...</h4>
+                <p>Eduarda Almeida</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Screen -->
+    <div class="profile-screen" id="profileScreen">
+        <div class="profile-header">
+            <div class="profile-avatar-container">
+                <div class="profile-avatar" id="profileAvatar">
+                    <i class="fas fa-user" id="avatarIcon"></i>
+                    <img id="avatarImage" style="display: none;">
+                </div>
+                <button class="change-photo-btn" onclick="document.getElementById('avatarUpload').click()">
+                    <i class="fas fa-camera"></i>
+                </button>
+                <input type="file" id="avatarUpload" accept="image/*" onchange="handleAvatarUpload(event)" style="display: none;">
+            </div>
+            <div class="profile-info">
+                <h2 id="profileUserName">Leitor</h2>
+                <p id="userStatus">Novo no app</p>
+                <button class="edit-name-btn" onclick="openEditNameModal()">
+                    <i class="fas fa-edit"></i> Editar nome
+                </button>
+            </div>
+        </div>
+        
+        <div class="profile-stats">
+            <div class="profile-stat">
+                <div class="stat-number" id="profileBooksCount">4</div>
+                <div class="stat-label">Ebooks</div>
+            </div>
+            <div class="profile-stat">
+                <div class="stat-number" id="profileMyBooks">0</div>
+                <div class="stat-label">Meus Ebooks</div>
+            </div>
+            <div class="profile-stat">
+                <div class="stat-number" id="profileDays">1</div>
+                <div class="stat-label">Dias</div>
+            </div>
+        </div>
+        
+        <div class="my-books-section">
+            <h3>Meus Ebooks Criados</h3>
+            <div class="my-books-grid" id="myBooksGrid">
+                <!-- Meus ebooks serão carregados aqui -->
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <p>Você ainda não criou nenhum ebook</p>
+                    <button class="btn btn-primary" onclick="showCreateScreen()" style="margin-top: 15px;">
+                        Criar Primeiro Ebook
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="profile-menu" style="margin-top: 30px;">
+            <div class="menu-item" onclick="showLibrary()">
+                <div class="menu-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div>
+                    <h4>Biblioteca</h4>
+                    <p>Ver todos os ebooks</p>
+                </div>
+            </div>
+            <div class="menu-item" onclick="showCreateScreen()">
+                <div class="menu-icon">
+                    <i class="fas fa-pen"></i>
+                </div>
+                <div>
+                    <h4>Criar Novo</h4>
+                    <p>Escrever nova história</p>
+                </div>
+            </div>
+            <div class="menu-item" onclick="exportAllEbooks()">
+                <div class="menu-icon">
+                    <i class="fas fa-download"></i>
+                </div>
+                <div>
+                    <h4>Exportar Ebooks</h4>
+                    <p>Baixar todos os meus ebooks</p>
+                </div>
+            </div>
+            <div class="menu-item" onclick="clearMyEbooks()">
+                <div class="menu-icon">
+                    <i class="fas fa-trash"></i>
+                </div>
+                <div>
+                    <h4>Limpar Biblioteca</h4>
+                    <p>Remover meus ebooks</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav" id="bottomNav">
+        <a href="javascript:void(0)" class="nav-item active" onclick="showHomeScreen()">
+            <div class="nav-icon">
+                <i class="fas fa-home"></i>
+            </div>
+            <div class="nav-label">Início</div>
+        </a>
+        <a href="javascript:void(0)" class="nav-item" onclick="showLibrary()">
+            <div class="nav-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <div class="nav-label">Biblioteca</div>
+        </a>
+        <a href="javascript:void(0)" class="nav-item" onclick="showCreateScreen()">
+            <div class="nav-icon">
+                <i class="fas fa-plus-circle"></i>
+            </div>
+            <div class="nav-label">Criar</div>
+        </a>
+        <a href="javascript:void(0)" class="nav-item" onclick="showProfile()">
+            <div class="nav-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="nav-label">Perfil</div>
+        </a>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Ebook Salvo!</h2>
+            <p>Seu ebook "<span id="createdEbookTitle">Meu Romance</span>" foi salvo no seu perfil e está disponível na sua biblioteca pessoal.</p>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeModal()">
+                    Continuar
+                </button>
+                <button class="btn btn-primary" onclick="viewMyEbooks()">
+                    Ver Meus Ebooks
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Name Modal -->
+    <div class="modal" id="editNameModal">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-user-edit"></i>
+            </div>
+            <h2>Editar Nome</h2>
+            <p>Digite seu novo nome</p>
+            
+            <div class="form-group" style="margin: 20px 0;">
+                <input type="text" id="editNameInput" class="form-input" placeholder="Seu novo nome" style="width: 100%;">
+                <div class="error-message" id="editNameError" style="text-align: left;">Nome deve ter pelo menos 2 caracteres</div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeEditNameModal()">
+                    Cancelar
+                </button>
+                <button class="btn btn-primary" onclick="saveNewName()">
+                    <i class="fas fa-save"></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados dos ebooks incluídos no app
+        const includedBooks = [
+            {
+                id: 1,
+                title: "Amor em Tempos de Café",
+                author: "Eduarda Silva",
+                rating: 4.8,
+                content: `Capítulo 1: O Encontro Improvável
+
+A cafeteria "Aconchego" tinha uma magia própria. Não era apenas o aroma de café fresco que preenchia o ar, mas a sensação de que o tempo passava mais devagar ali.
+
+Eduarda entrou, sacudindo a chuva fina do início da tarde. Seus olhos se ajustaram à luz suave e imediatamente encontraram os dele. Ele estava sentado no canto mais afastado, completamente absorto em um livro antigo cuja capa ela reconheceu mesmo à distância.
+
+Algo a puxou em sua direção. Talvez fosse a curiosidade, talvez o destino.
+
+"Desculpe interromper", disse ela, hesitante. "Esse é 'Amor em Tempos de Café', não é?"
+
+Ele levantou os olhos, surpreso, mas com um sorriso nos lábios. "Poucas pessoas reconheceriam esta edição. É de 1952."
+
+"Minha avó tinha uma cópia", explicou Eduarda, sentando-se na cadeira oposta sem ser convidada. "Lia para mim quando eu era criança."
+
+E assim, sob a luz suave da cafeteria e com a chuva batendo nas vidraças, começou uma conversa que nenhum dos dois queria que terminasse.`
+            },
+            {
+                id: 2,
+                title: "Desculpas do Coração",
+                author: "Eduarda Mendes",
+                rating: 4.6,
+                content: `Capítulo 1: As Palavras Não Ditas
+
+Lucas olhou para o telefone pela décima vez na última hora. A mensagem ainda estava lá, sem resposta: "Precisamos conversar. Café Central, 18h."
+
+Três anos juntos, e agora ele temia que três palavras fossem acabar com tudo. O trabalho o consumira nos últimos meses, e ele cancelara planos, esquecera aniversários, adiou conversas importantes.
+
+Às 17:45, ele estava no café, o coração martelando contra o peito. Viu Maria entrar exatamente às 18h. Ela parecia cansada, mas ainda tão bonita quanto no dia em que se conheceram.
+
+"Maria, eu..." começou ele.
+
+"Espere", ela interrompeu, sentando-se. "Deixe-me falar primeiro."
+
+Ele se calou, preparando-se para o pior.`
+            },
+            {
+                id: 3,
+                title: "O Diário de Ana",
+                author: "Eduarda Costa", 
+                rating: 4.9,
+                content: `Capítulo 1: O Segredo no Sótão
+
+Clara nunca gostou de limpar o sótão. Era quente, empoeirado e cheio de lembranças de uma avó que mal conhecera. Mas hoje era diferente.
+
+Enquanto movia uma caixa de livros velhos, algo caiu com um baque surdo. Um diário com capa de couro desgastada, preso por um cadeado enferrujado.
+
+Curiosa, Clara sentou-se no chão empoeirado. Com um pouco de força, o cadeado se abriu. Na primeira página, uma letra delicada e feminina:
+
+"Diário de Ana - 1952. Guarde meus segredos."
+
+12 de março de 1952
+"Hoje conheci ele. Na biblioteca municipal. Estava procurando 'As Vinhas da Ira', o mesmo que eu. Nossas mãos se tocaram ao alcançar o último exemplar. Ele sorriu e disse: 'Você primeiro.' Seu nome é Carlos. Tem olhos que lembram o céu antes da tempestade."`
+            },
+            {
+                id: 4,
+                title: "Entre Rosas e Espinhos",
+                author: "Eduarda Almeida",
+                rating: 4.7,
+                content: `Capítulo 1: O Jardim dos Segredos
+
+Isabel sempre sentiu atração pelo jardim da mansão Montenegro. Desde criança, observava através da cerca de ferro as roseiras cuidadosamente podadas, os caminhos de pedra que serpenteavam entre os canteiros e a fonte de mármore no centro.
+
+A propriedade pertencia ao sr. Montenegro, um homem recluso sobre quem a cidade inteira criara histórias. Uns diziam que era um velho rabugento; outros, que guardava um grande segredo.
+
+Um dia, ao perseguir seu gato Mimi que escapara pelo buraco na cadeia, Isabel encontrou-se dentro do jardim proibido. Era ainda mais bonito de perto. As rosas eram de variedades raras, e o aroma era intoxicante.`
+            }
+        ];
+
+        // Estado da aplicação
+        let currentScreen = 'home';
+        let currentBookIndex = 0;
+        let currentPage = 1;
+        let totalPages = 5;
+        let userEbooks = [];
+        let userProfile = {
+            name: "Leitor",
+            email: "",
+            avatar: null,
+            joinDate: new Date().toISOString(),
+            myEbooksCount: 0,
+            isRegistered: false
+        };
+
+        // Verificar se já está registrado
+        function checkRegistration() {
+            const savedProfile = localStorage.getItem('userProfile');
+            if (savedProfile) {
+                const profile = JSON.parse(savedProfile);
+                if (profile.isRegistered) {
+                    userProfile = profile;
+                    startApp();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Inicializar dados do localStorage
+        function initAppData() {
+            // Carregar ebooks do usuário
+            const savedEbooks = localStorage.getItem('userEbooks');
+            if (savedEbooks) {
+                userEbooks = JSON.parse(savedEbooks);
+            }
+            
+            // Atualizar contadores
+            updateCounters();
+            loadMyEbooks();
+            
+            // Atualizar nome em todos os lugares
+            updateUserNameEverywhere();
+            
+            // Preencher autor padrão no formulário de criação
+            document.getElementById('ebookAuthor').value = userProfile.name;
+        }
+
+        // Atualizar contadores
+        function updateCounters() {
+            // Total de ebooks incluídos no app
+            document.getElementById('totalBooks').textContent = includedBooks.length;
+            
+            // Meus ebooks criados
+            const myEbooksCount = userEbooks.length;
+            document.getElementById('myBooksCount').textContent = myEbooksCount;
+            document.getElementById('profileMyBooks').textContent = myEbooksCount;
+            
+            // Dias desde o registro
+            const joinDate = new Date(userProfile.joinDate);
+            const today = new Date();
+            const diffTime = Math.abs(today - joinDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            document.getElementById('profileDays').textContent = diffDays;
+            
+            // Total de ebooks (incluídos + criados)
+            document.getElementById('profileBooksCount').textContent = includedBooks.length + myEbooksCount;
+        }
+
+        // Atualizar nome em todos os lugares
+        function updateUserNameEverywhere() {
+            const name = userProfile.name;
+            document.getElementById('headerUserName').textContent = name;
+            document.getElementById('homeUserName').textContent = name;
+            document.getElementById('profileUserName').textContent = name;
+            document.getElementById('userStatus').textContent = userProfile.isRegistered ? "Membro desde " + new Date(userProfile.joinDate).toLocaleDateString() : "Novo no app";
+            
+            // Atualizar autor padrão no formulário de criação
+            document.getElementById('ebookAuthor').value = name;
+        }
+
+        // Registrar usuário
+        function registerUser(name, email = "") {
+            userProfile.name = name.trim();
+            userProfile.email = email.trim();
+            userProfile.isRegistered = true;
+            userProfile.joinDate = new Date().toISOString();
+            
+            // Salvar no localStorage
+            localStorage.setItem('userProfile', JSON.stringify(userProfile));
+            
+            // Iniciar app
+            startApp();
+        }
+
+        // Pular registro
+        function skipRegistration() {
+            userProfile.name = "Leitor";
+            userProfile.isRegistered = false;
+            userProfile.joinDate = new Date().toISOString();
+            
+            // Salvar no localStorage
+            localStorage.setItem('userProfile', JSON.stringify(userProfile));
+            
+            // Iniciar app
+            startApp();
+        }
+
+        // Iniciar app após registro
+        function startApp() {
+            // Esconder tela de boas-vindas
+            document.getElementById('welcomeScreen').style.display = 'none';
+            
+            // Mostrar app
+            document.getElementById('appHeader').style.display = 'flex';
+            document.getElementById('bottomNav').style.display = 'flex';
+            document.getElementById('homeScreen').style.display = 'block';
+            
+            // Inicializar dados
+            initAppData();
+            
+            // Atualizar nome
+            updateUserNameEverywhere();
+        }
+
+        // Validação do formulário de registro
+        document.getElementById('nameRegistrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nameInput = document.getElementById('userName');
+            const emailInput = document.getElementById('userEmail');
+            const nameError = document.getElementById('nameError');
+            const emailError = document.getElementById('emailError');
+            
+            let isValid = true;
+            
+            // Validar nome
+            if (!nameInput.value || nameInput.value.trim().length < 2) {
+                nameInput.classList.add('error');
+                nameError.style.display = 'block';
+                isValid = false;
+            } else {
+                nameInput.classList.remove('error');
+                nameError.style.display = 'none';
+            }
+            
+            // Validar e-mail (opcional, mas se preenchido, deve ser válido)
+            if (emailInput.value && !isValidEmail(emailInput.value)) {
+                emailInput.classList.add('error');
+                emailError.style.display = 'block';
+                isValid = false;
+            } else {
+                emailInput.classList.remove('error');
+                emailError.style.display = 'none';
+            }
+            
+            if (isValid) {
+                registerUser(nameInput.value, emailInput.value);
+            }
+        });
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Navegação entre telas
+        function showHomeScreen() {
+            hideAllScreens();
+            document.getElementById('homeScreen').style.display = 'block';
+            currentScreen = 'home';
+            updateNav('home');
+            updateCounters();
+        }
+
+        function showLibrary() {
+            hideAllScreens();
+            document.getElementById('libraryScreen').style.display = 'block';
+            currentScreen = 'library';
+            updateNav('library');
+        }
+
+        function showCreateScreen() {
+            hideAllScreens();
+            document.getElementById('createScreen').style.display = 'block';
+            currentScreen = 'create';
+            updateNav('create');
+            
+            // Preencher autor com nome do usuário
+            document.getElementById('ebookAuthor').value = userProfile.name;
+        }
+
+        function showProfile() {
+            hideAllScreens();
+            document.getElementById('profileScreen').style.display = 'block';
+            currentScreen = 'profile';
+            updateNav('profile');
+            loadMyEbooks();
+            updateCounters();
+        }
+
+        function hideAllScreens() {
+            const screens = ['homeScreen', 'readerScreen', 'createScreen', 'libraryScreen', 'profileScreen'];
+            screens.forEach(screen => {
+                document.getElementById(screen).style.display = 'none';
+            });
+        }
+
+        function updateNav(active) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`.nav-item[onclick*="${active}"]`).classList.add('active');
+        }
+
+        // Sistema de leitura
+        function startReading(bookIndex) {
+            currentBookIndex = bookIndex;
+            currentPage = 1;
+            
+            let book;
+            if (bookIndex < includedBooks.length) {
+                book = includedBooks[bookIndex];
+            } else {
+                book = userEbooks[bookIndex - includedBooks.length];
+            }
+            
+            document.getElementById('readerBookTitle').textContent = book.title;
+            document.getElementById('readerBookAuthor').textContent = book.author;
+            
+            // Dividir conteúdo em páginas
+            const content = book.content;
+            const words = content.split(' ');
+            const wordsPerPage = Math.ceil(words.length / totalPages);
+            
+            let readerContent = '';
+            for (let i = 0; i < totalPages; i++) {
+                const start = i * wordsPerPage;
+                const end = start + wordsPerPage;
+                const pageWords = words.slice(start, end);
+                readerContent += `
+                    <div class="page" id="page${i+1}" ${i > 0 ? 'style="display:none"' : ''}>
+                        <h4>Capítulo ${i+1}</h4>
+                        <p>${pageWords.join(' ')}</p>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('readerContent').innerHTML = readerContent;
+            updateReaderUI();
+            
+            hideAllScreens();
+            document.getElementById('readerScreen').style.display = 'block';
+            currentScreen = 'reader';
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                document.getElementById(`page${currentPage}`).style.display = 'none';
+                currentPage++;
+                document.getElementById(`page${currentPage}`).style.display = 'block';
+                updateReaderUI();
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                document.getElementById(`page${currentPage}`).style.display = 'none';
+                currentPage--;
+                document.getElementById(`page${currentPage}`).style.display = 'block';
+                updateReaderUI();
+            }
+        }
+
+        function updateReaderUI() {
+            document.getElementById('pageInfo').textContent = `${currentPage}/${totalPages}`;
+            const progress = (currentPage / totalPages) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+
+        // Criar e salvar ebook
+        function createAndSaveEbook() {
+            const title = document.getElementById('ebookTitle').value;
+            const author = document.getElementById('ebookAuthor').value;
+            const content = document.getElementById('ebookContent').value;
+            
+            if (!title || !author || !content) {
+                alert("Por favor, preencha todos os campos obrigatórios (*)");
+                return;
+            }
+            
+            // Criar novo ebook
+            const newEbook = {
+                id: Date.now(),
+                title: title,
+                author: author,
+                content: content,
+                theme: document.querySelector('input[name="theme"]:checked').value,
+                created: new Date().toISOString(),
+                isUserCreated: true
+            };
+            
+            // Adicionar à lista de ebooks do usuário
+            userEbooks.push(newEbook);
+            
+            // Salvar no localStorage
+            localStorage.setItem('userEbooks', JSON.stringify(userEbooks));
+            
+            // Atualizar nome do usuário se não estiver registrado
+            if (!userProfile.isRegistered || userProfile.name === "Leitor") {
+                userProfile.name = author;
+                userProfile.isRegistered = true;
+                updateUserNameEverywhere();
+                localStorage.setItem('userProfile', JSON.stringify(userProfile));
+            }
+            
+            // Mostrar modal de sucesso
+            document.getElementById('createdEbookTitle').textContent = title;
+            document.getElementById('successModal').style.display = 'flex';
+            
+            // Atualizar contadores
+            updateCounters();
+        }
+
+        // Carregar meus ebooks no perfil
+        function loadMyEbooks() {
+            const myBooksGrid = document.getElementById('myBooksGrid');
+            
+            if (userEbooks.length === 0) {
+                myBooksGrid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <p>Você ainda não criou nenhum ebook</p>
+                        <button class="btn btn-primary" onclick="showCreateScreen()" style="margin-top: 15px;">
+                            Criar Primeiro Ebook
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            userEbooks.forEach((ebook, index) => {
+                const bookIndex = includedBooks.length + index;
+                html += `
+                    <div class="my-book-card" onclick="startReading(${bookIndex})">
+                        <div class="my-book-cover" style="background: linear-gradient(45deg, var(--accent), ${ebook.theme === 'romance' ? '#8b0000' : '#1a1a2e'});">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h4>${ebook.title.substring(0, 15)}${ebook.title.length > 15 ? '...' : ''}</h4>
+                        <p>${ebook.author}</p>
+                        <small>${new Date(ebook.created).toLocaleDateString()}</small>
+                    </div>
+                `;
+            });
+            
+            myBooksGrid.innerHTML = html;
+        }
+
+        // Upload de foto de perfil
+        function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Verificar se é uma imagem
+            if (!file.type.match('image.*')) {
+                alert('Por favor, selecione apenas imagens.');
+                return;
+            }
+            
+            // Verificar tamanho (máximo 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('A imagem deve ter no máximo 5MB.');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const avatarImage = document.getElementById('avatarImage');
+                const avatarIcon = document.getElementById('avatarIcon');
+                
+                avatarImage.src = e.target.result;
+                avatarImage.style.display = 'block';
+                avatarIcon.style.display = 'none';
+                
+                // Salvar no perfil do usuário
+                userProfile.avatar = e.target.result;
+                localStorage.setItem('userProfile', JSON.stringify(userProfile));
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        // Editar nome
+        function openEditNameModal() {
+            document.getElementById('editNameInput').value = userProfile.name;
+            document.getElementById('editNameModal').style.display = 'flex';
+        }
+
+        function closeEditNameModal() {
+            document.getElementById('editNameModal').style.display = 'none';
+        }
+
+        function saveNewName() {
+            const newName = document.getElementById('editNameInput').value.trim();
+            const errorElement = document.getElementById('editNameError');
+            
+            if (!newName || newName.length < 2) {
+                errorElement.style.display = 'block';
+                return;
+            }
+            
+            errorElement.style.display = 'none';
+            
+            // Atualizar nome do usuário
+            userProfile.name = newName;
+            userProfile.isRegistered = true;
+            
+            // Salvar no localStorage
+            localStorage.setItem('userProfile', JSON.stringify(userProfile));
+            
+            // Atualizar em todos os lugares
+            updateUserNameEverywhere();
+            
+            // Fechar modal
+            closeEditNameModal();
+            
+            // Feedback
+            alert("Nome atualizado com sucesso!");
+        }
+
+        // Funções do modal
+        function closeModal() {
+            document.getElementById('successModal').style.display = 'none';
+        }
+
+        function viewMyEbooks() {
+            closeModal();
+            showProfile();
+        }
+
+        // Exportar todos os ebooks
+        function exportAllEbooks() {
+            if (userEbooks.length === 0) {
+                alert("Você ainda não criou nenhum ebook para exportar.");
+                return;
+            }
+            
+            let exportContent = `=== MEUS EBOOKS CRIADOS ===\nAutor: ${userProfile.name}\nData: ${new Date().toLocaleDateString()}\n\n`;
+            
+            userEbooks.forEach((ebook, index) => {
+                exportContent += `EBOOK ${index + 1}\n`;
+                exportContent += `Título: ${ebook.title}\n`;
+                exportContent += `Autor(a): ${ebook.author}\n`;
+                exportContent += `Data: ${new Date(ebook.created).toLocaleDateString()}\n`;
+                exportContent += `Tema: ${ebook.theme}\n`;
+                exportContent += `\n${ebook.content}\n\n`;
+                exportContent += `---\n\n`;
+            });
+            
+            const blob = new Blob([exportContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Meus_Ebooks_${userProfile.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Limpar meus ebooks
+        function clearMyEbooks() {
+            if (userEbooks.length === 0) {
+                alert("Você não tem ebooks para limpar.");
+                return;
+            }
+            
+            if (confirm("Tem certeza que deseja remover todos os seus ebooks criados? Esta ação não pode ser desfeita.")) {
+                userEbooks = [];
+                localStorage.removeItem('userEbooks');
+                loadMyEbooks();
+                updateCounters();
+                alert("Todos os seus ebooks foram removidos.");
+            }
+        }
+
+        // Busca na biblioteca
+        document.getElementById('librarySearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const books = document.querySelectorAll('.library-book');
+            
+            books.forEach(book => {
+                const title = book.querySelector('h4').textContent.toLowerCase();
+                const author = book.querySelector('p').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || author.includes(searchTerm)) {
+                    book.style.display = 'block';
+                } else {
+                    book.style.display = 'none';
+                }
+            });
+        });
+
+        // Funções auxiliares
+        function toggleSearch() {
+            if (currentScreen === 'library') {
+                document.getElementById('librarySearch').focus();
+            } else {
+                showLibrary();
+                setTimeout(() => {
+                    document.getElementById('librarySearch').focus();
+                }, 300);
+            }
+        }
+
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            const modals = ['successModal', 'editNameModal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
+        // Inicialização
+        window.onload = function() {
+            if (!checkRegistration()) {
+                // Mostrar tela de boas-vindas
+                document.getElementById('welcomeScreen').style.display = 'flex';
+            }
+        };
+    </script>
+</body>
+</html>
